@@ -8,7 +8,7 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 
-export default function Page() {
+export default function DashboardPage() {
   // Sample bugs data for the data table
   const bugsData = [
     {

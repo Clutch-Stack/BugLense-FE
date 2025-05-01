@@ -3,16 +3,18 @@
 import * as React from "react"
 import {
   Bug,
-  LayoutDashboard,
-  FolderKanban,
   BarChart3,
+  FolderKanban,
+  LayoutDashboard,
   Settings,
   Users,
   Search,
   HelpCircle,
-  AlertCircle,
   Clock,
   Star,
+  Database,
+  FileText,
+  AlertCircle,
   Layers
 } from "lucide-react"
 
