@@ -17,6 +17,7 @@ import {
   AlertCircle,
   Layers
 } from "lucide-react"
+import Link from "next/link"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
@@ -32,136 +33,65 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: "",
-    initials: "JD"
-  },
-  navMain: [
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const navMainItems = [
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: LayoutDashboard,
+      icon: LayoutDashboard
     },
     {
       title: "Projects",
       url: "/projects",
-      icon: FolderKanban,
+      icon: FolderKanban
     },
     {
       title: "Bugs",
       url: "/bugs",
-      icon: Bug,
+      icon: Bug
     },
     {
       title: "Analytics",
       url: "/analytics",
-      icon: BarChart3,
+      icon: BarChart3
     },
     {
       title: "Team",
       url: "/team",
-      icon: Users,
+      icon: Users
     },
-  ],
-  navCategories: [
-    {
-      title: "Priority",
-      icon: AlertCircle,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "High Priority",
-          url: "#",
-        },
-        {
-          title: "Medium Priority",
-          url: "#",
-        },
-        {
-          title: "Low Priority",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Status",
-      icon: Layers,
-      url: "#",
-      items: [
-        {
-          title: "Open",
-          url: "#",
-        },
-        {
-          title: "In Progress",
-          url: "#",
-        },
-        {
-          title: "Resolved",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Recently Viewed",
-      icon: Clock,
-      url: "#",
-      items: [
-        {
-          title: "User Portal",
-          url: "#",
-        },
-        {
-          title: "Admin Dashboard",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
+  ];
+
+  const navSecondaryItems = [
     {
       title: "Settings",
       url: "/settings",
-      icon: Settings,
+      icon: Settings
     },
     {
       title: "Help",
       url: "#",
-      icon: HelpCircle,
+      icon: HelpCircle
     },
     {
       title: "Search",
       url: "#",
-      icon: Search,
+      icon: Search
     },
-  ],
-  favorites: [
-    {
-      name: "User Portal",
-      url: "#",
-      icon: Star,
-    },
-    {
-      name: "Admin Dashboard",
-      url: "#",
-      icon: Star,
-    },
-    {
-      name: "Auth Service",
-      url: "#",
-      icon: Star,
-    },
-  ],
-}
+  ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const favorites = [];
+
+  const user = {
+    name: "John Doe",
+    email: "john@example.com",
+    avatar: "",
+    initials: "JD"
+  };
+
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
+    <Sidebar collapsible="offcanvas" className="border-r" {...props}>
+      <SidebarHeader className="p-2 px-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -176,13 +106,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.favorites} title="Favorites" />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+      <SidebarContent className="pt-3">
+        <NavMain items={navMainItems} />
+        {favorites.length > 0 && <NavDocuments items={favorites} title="Favorites" />}
+        <NavSecondary items={navSecondaryItems} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

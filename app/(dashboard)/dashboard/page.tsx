@@ -8,68 +8,22 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 
-export default function DashboardPage() {
-  // Sample bugs data for the data table
-  const bugsData = [
-    {
-      id: "BUG-001",
-      title: "User settings page crashes on save",
-      status: "Open",
-      priority: "High",
-      assignee: "John Doe",
-      project: "User Portal",
-      updatedAt: "2 hours ago",
-    },
-    {
-      id: "BUG-002",
-      title: "Search results pagination not working",
-      status: "In Progress",
-      priority: "Medium",
-      assignee: "Sarah Kim",
-      project: "Admin Dashboard",
-      updatedAt: "5 hours ago",
-    },
-    {
-      id: "BUG-003",
-      title: "Form validation errors not displaying correctly",
-      status: "Open",
-      priority: "Low",
-      assignee: "Unassigned",
-      project: "User Portal",
-      updatedAt: "1 day ago",
-    },
-    {
-      id: "BUG-004",
-      title: "Authentication fails after password reset",
-      status: "In Progress",
-      priority: "High",
-      assignee: "Emma Chen",
-      project: "Auth Service",
-      updatedAt: "2 days ago",
-    },
-    {
-      id: "BUG-005",
-      title: "Mobile navigation does not collapse properly",
-      status: "Open",
-      priority: "Medium",
-      assignee: "David Lee",
-      project: "Mobile App",
-      updatedAt: "3 days ago",
-    },
-  ];
+import bugsData from "./data.json"
 
+export default function DashboardPage() {
   return (
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
+          "--sidebar-width": "16rem",
+          "--header-height": "3.5rem",
+          "--spacing": "0.25rem",
         } as React.CSSProperties
       }
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader />
+        <SiteHeader title="Dashboard" />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
