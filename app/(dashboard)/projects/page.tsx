@@ -122,9 +122,11 @@ export default function ProjectsPage() {
                     <h1 className="text-2xl font-bold tracking-tight">Projects</h1>
                     <p className="text-muted-foreground">Manage and track your projects</p>
                   </div>
-                  <Button className="h-9 gap-1.5">
-                    <Plus className="h-4 w-4" />
-                    New Project
+                  <Button className="h-9 gap-1.5" asChild>
+                    <Link href="/projects/new">
+                      <Plus className="h-4 w-4" />
+                      New Project
+                    </Link>
                   </Button>
                 </div>
 
@@ -259,7 +261,9 @@ export default function ProjectsPage() {
                         <h3 className="font-medium">Create a new project</h3>
                         <p className="text-sm text-muted-foreground">Add a new project to track bugs and collaborate</p>
                       </div>
-                      <Button className="mt-2">Create Project</Button>
+                      <Button className="mt-2" asChild>
+                        <Link href="/projects/new">Create Project</Link>
+                      </Button>
                     </div>
                   </Card>
                 </div>
