@@ -7,7 +7,7 @@ import {
   Controller,
   FormProvider,
   useFormContext,
-  useFormState,
+  useFormState as useHookFormState,
   type ControllerProps,
   type FieldPath,
   type FieldValues,
@@ -45,15 +45,39 @@ const FormField = <
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
-  const { getFieldState } = useFormContext()
-  const formState = useFormState({ name: fieldContext.name })
-  const fieldState = getFieldState(fieldContext.name, formState)
-
+  const formContext = useFormContext()
+  
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>")
   }
 
+  if (!itemContext) {
+    throw new Error("useFormField should be used within <FormItem>")
+  }
+
   const { id } = itemContext
+
+  // Return basic info if form context is not available
+  if (!formContext) {
+    return {
+      id,
+      name: fieldContext.name,
+      formItemId: `${id}-form-item`,
+      formDescriptionId: `${id}-form-item-description`,
+      formMessageId: `${id}-form-item-message`,
+      error: undefined
+    }
+  }
+
+  // Extract control if form context is available
+  const { control } = formContext
+  
+  const fieldState = useHookFormState({
+    control,
+    name: fieldContext.name,
+  })
+
+  const { error } = fieldState
 
   return {
     id,
@@ -61,7 +85,7 @@ const useFormField = () => {
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
-    ...fieldState,
+    error,
   }
 }
 
