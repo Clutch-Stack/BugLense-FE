@@ -8,14 +8,15 @@ import {
   LayoutDashboard,
   Settings,
   Users,
-  Search,
   HelpCircle,
   Clock,
   Star,
   Database,
   FileText,
   AlertCircle,
-  Layers
+  Layers,
+  Book,
+  Code
 } from "lucide-react"
 import Link from "next/link"
 
@@ -64,6 +65,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const navSecondaryItems = [
     {
+      title: "Documentation",
+      url: "/docs",
+      icon: Book
+    },
+    {
+      title: "Developer",
+      url: "/developer",
+      icon: Code
+    },
+    {
       title: "Settings",
       url: "/settings",
       icon: Settings
@@ -72,12 +83,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: "Help",
       url: "#",
       icon: HelpCircle
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: Search
-    },
+    }
   ];
 
   const favorites = [];

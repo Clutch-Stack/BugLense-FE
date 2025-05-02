@@ -108,7 +108,7 @@ export default function BugsPage() {
                     <p className="text-muted-foreground">Track and manage issues across your projects</p>
                   </div>
                   <Button className="h-9 gap-1.5" asChild>
-                    <Link href="/bugs/new">
+                    <Link href="/bugs/report">
                       <Plus className="h-4 w-4" />
                       Report Bug
                     </Link>
