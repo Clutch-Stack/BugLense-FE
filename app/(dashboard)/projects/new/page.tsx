@@ -107,7 +107,7 @@ export default function NewProjectPage() {
           errors: {},
         };
       } else {
-        const errors = {};
+        const errors: Record<string, { type: string; message: string }> = {};
         result.error.errors.forEach((error) => {
           const path = error.path.join(".");
           errors[path] = {
