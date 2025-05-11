@@ -1,7 +1,7 @@
 "use server"
 
 // This is a dummy action for demonstration purposes only
-export async function forgotPassword(formData: FormData) {
+export async function forgotPassword(_formData: FormData) {
   // In a real app, this would validate the email and send a reset link
   
   // Simulate a small delay

@@ -11,7 +11,6 @@ import {
   FileQuestion, 
   MessageSquare, 
   HelpCircle, 
-  ChevronDown, 
   InfoIcon, 
   BookOpen, 
   Sparkles, 
@@ -30,7 +29,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -126,15 +124,15 @@ export default function HelpPage() {
   const faqItems = [
     {
       question: "How do I create a new project?",
-      answer: "To create a new project, navigate to the Projects page from the sidebar and click on the 'New Project' button in the top right corner. Fill in the project details form and click 'Create Project' to finish."
+      answer: "To create a new project, navigate to the Projects page from the sidebar and click on the &apos;New Project&apos; button in the top right corner. Fill in the project details form and click &apos;Create Project&apos; to finish."
     },
     {
       question: "Can I invite team members to my project?",
-      answer: "Yes, you can invite team members to your project from the Team page. Click on 'Add Member' and enter their email address. They will receive an invitation to join your project."
+      answer: "Yes, you can invite team members to your project from the Team page. Click on &apos;Add Member&apos; and enter their email address. They will receive an invitation to join your project."
     },
     {
       question: "How do I report a bug?",
-      answer: "To report a bug, go to the Bugs page and click 'Report Bug'. Fill in the bug report form with details about the issue, including steps to reproduce, expected behavior, and actual behavior."
+      answer: "To report a bug, go to the Bugs page and click &apos;Report Bug&apos;. Fill in the bug report form with details about the issue, including steps to reproduce, expected behavior, and actual behavior."
     },
     {
       question: "What information should I include in a bug report?",
@@ -142,7 +140,7 @@ export default function HelpPage() {
     },
     {
       question: "How do I track the status of reported bugs?",
-      answer: "You can track the status of reported bugs on the Bugs page. Each bug has a status indicator that shows whether it's new, in progress, or resolved. You can also filter bugs by status."
+      answer: "You can track the status of reported bugs on the Bugs page. Each bug has a status indicator that shows whether it&apos;s new, in progress, or resolved. You can also filter bugs by status."
     },
     {
       question: "How do I change my account settings?",
@@ -153,8 +151,8 @@ export default function HelpPage() {
       answer: "BugLense offers different subscription tiers based on your needs. You can view and manage your subscription from the Settings > Billing page. We offer monthly and annual billing options with discounts for annual commitments."
     },
     {
-      question: "How can I get help if my question isn't answered here?",
-      answer: "If your question isn't answered in the FAQ, you can submit a support ticket using the form on the Help page. Our support team will get back to you as soon as possible."
+      question: "How can I get help if my question isn&apos;t answered here?",
+      answer: "If your question isn&apos;t answered in the FAQ, you can submit a support ticket using the form on the Help page. Our support team will get back to you as soon as possible."
     }
   ]
 
@@ -298,7 +296,7 @@ export default function HelpPage() {
                           Contact Support
                         </CardTitle>
                         <CardDescription>
-                          Submit a support ticket and we'll get back to you as soon as possible
+                          Submit a support ticket and we&apos;ll get back to you as soon as possible
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -410,7 +408,7 @@ export default function HelpPage() {
                                     />
                                   </FormControl>
                                   <FormDescription>
-                                    We'll use this email to contact you about your support request.
+                                    We&apos;ll use this email to contact you about your support request.
                                   </FormDescription>
                                   <FormMessage />
                                 </FormItem>
