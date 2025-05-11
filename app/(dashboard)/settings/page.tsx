@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { toast } from "@/components/ui/use-toast"
 
@@ -50,7 +50,7 @@ export default function SettingsPage() {
     defaultValues,
   })
 
-  function onSubmit(data: ProfileFormValues) {
+  function onSubmit(_data: ProfileFormValues) {
     setIsLoading(true)
     
     // Simulate API call

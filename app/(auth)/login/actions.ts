@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 
 // This is a dummy login action for demonstration purposes only
-export async function login(_formData: FormData) {
+export async function login(_: FormData) {
   // In a real app, this would validate credentials and authenticate the user
   
   // Simulate a small delay

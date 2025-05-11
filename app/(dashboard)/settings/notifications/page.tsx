@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Bell, Mail, PhoneCall, MessageSquare, AlertCircle } from "lucide-react"
+import { Bell, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -123,7 +123,7 @@ export default function NotificationsPage() {
                 <div className="space-y-0.5">
                   <Label htmlFor="email-projects">Project updates</Label>
                   <p className="text-sm text-muted-foreground">
-                    Changes to projects you're part of or watching.
+                    Changes to projects you&apos;re part of or watching.
                   </p>
                 </div>
                 <Switch 
@@ -205,7 +205,7 @@ export default function NotificationsPage() {
                 <div className="space-y-0.5">
                   <Label htmlFor="push-projects">Project updates</Label>
                   <p className="text-sm text-muted-foreground">
-                    Changes to projects you're part of or watching.
+                    Changes to projects you&apos;re part of or watching.
                   </p>
                 </div>
                 <Switch 

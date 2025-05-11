@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 
 // This is a dummy registration action for demonstration purposes only
-export async function register(formData: FormData) {
+export async function register(_: FormData) {
   // In a real app, this would validate and store the new user
   
   // Simulate a small delay

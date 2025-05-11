@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Book, Search, BookOpen, FileText, Code, ChevronRight, LayoutDashboard, Home, FileCode, BookMarked, Filter, ExternalLink, Star } from "lucide-react"
+import { Book, Search, BookOpen, FileText, Code, ChevronRight, Home, FileCode, BookMarked, Filter, ExternalLink, Star } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
@@ -97,7 +97,6 @@ const navLinks = [
 
 export default function DocumentationPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeFilter, setActiveFilter] = useState("all")
   
   return (
     <div className="space-y-6">

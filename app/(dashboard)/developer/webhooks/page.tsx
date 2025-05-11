@@ -4,7 +4,7 @@ import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { MessageSquareShare, Plus, Trash2, Globe, ArrowRight, Check, X, Pencil, Loader2, LayoutDashboard, Home, FileCode, BookMarked, HelpCircle } from "lucide-react"
+import { MessageSquareShare, Plus, Trash2, Globe, Check, X, Pencil, Loader2, LayoutDashboard, Home, FileCode, BookMarked, HelpCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -20,13 +20,6 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "@/components/ui/use-toast"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import {
   Dialog,
@@ -35,7 +28,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import Link from "next/link"
 

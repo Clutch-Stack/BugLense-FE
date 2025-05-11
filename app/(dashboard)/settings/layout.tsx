@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { CreditCard, Bell, User, Shield, Lock } from "lucide-react"
+import { CreditCard, Bell, User, Shield } from "lucide-react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import {

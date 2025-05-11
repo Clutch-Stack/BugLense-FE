@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,7 +18,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
 import { toast } from "@/components/ui/use-toast"
 
 const passwordFormSchema = z
@@ -85,7 +83,7 @@ export default function SecurityPage() {
     defaultValues,
   })
 
-  function onPasswordSubmit(data: PasswordFormValues) {
+  function onPasswordSubmit(_data: PasswordFormValues) {
     setIsLoading(true)
     
     // Simulate API call
