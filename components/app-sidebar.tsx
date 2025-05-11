@@ -13,6 +13,7 @@ import {
   Code
 } from "lucide-react"
 import Link from "next/link"
+import { type Icon } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
@@ -28,32 +29,37 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+// Create wrapper components for Lucide icons to match Tabler icon type
+const createIconWrapper = (LucideIcon: React.ElementType): Icon => {
+  return (props) => <LucideIcon {...props} />;
+};
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navMainItems = [
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: LayoutDashboard
+      icon: createIconWrapper(LayoutDashboard)
     },
     {
       title: "Projects",
       url: "/projects",
-      icon: FolderKanban
+      icon: createIconWrapper(FolderKanban)
     },
     {
       title: "Bugs",
       url: "/bugs",
-      icon: Bug
+      icon: createIconWrapper(Bug)
     },
     {
       title: "Analytics",
       url: "/analytics",
-      icon: BarChart3
+      icon: createIconWrapper(BarChart3)
     },
     {
       title: "Team",
       url: "/team",
-      icon: Users
+      icon: createIconWrapper(Users)
     },
   ];
 
@@ -61,26 +67,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       title: "Documentation",
       url: "/docs",
-      icon: Book
+      icon: createIconWrapper(Book)
     },
     {
       title: "Developer",
       url: "/developer",
-      icon: Code
+      icon: createIconWrapper(Code)
     },
     {
       title: "Settings",
       url: "/settings",
-      icon: Settings
+      icon: createIconWrapper(Settings)
     },
     {
       title: "Help",
       url: "/help",
-      icon: HelpCircle
+      icon: createIconWrapper(HelpCircle)
     }
   ];
 
-  const favorites: { name: string; url: string; icon: React.ElementType }[] = [];
+  const favorites: { name: string; url: string; icon: Icon }[] = [];
 
   const user = {
     name: "John Doe",
@@ -108,7 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent className="pt-3">
         <NavMain items={navMainItems} />
-        {favorites.length > 0 && <NavDocuments items={favorites} title="Favorites" />}
+        {favorites.length > 0 && <NavDocuments items={favorites} />}
         <NavSecondary items={navSecondaryItems} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

@@ -81,8 +81,8 @@ const useFormField = () => {
     }
   }
 
-  // Extract error from fieldState
-  const { error } = fieldState
+  // Extract error from fieldState safely with type assertion
+  const error = fieldState.errors?.[fieldContext.name]
 
   return {
     ...defaultValues,
