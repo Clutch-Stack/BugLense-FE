@@ -3,11 +3,15 @@
 import { redirect } from "next/navigation";
 
 // This is a dummy login action for demonstration purposes only
-export async function login() {
+export async function login(formData: FormData): Promise<void> {
   // In a real app, this would validate credentials and authenticate the user
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
   
   // Simulate a small delay
   await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  console.log(`Login attempt for: ${email}`);
   
   // Always redirect to dashboard for demo
   redirect("/dashboard");
