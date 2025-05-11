@@ -80,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   ];
 
-  const favorites = [];
+  const favorites: { name: string; url: string; icon: React.ElementType }[] = [];
 
   const user = {
     name: "John Doe",
