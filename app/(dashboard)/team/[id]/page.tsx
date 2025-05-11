@@ -81,7 +81,7 @@ type TeamMember = {
 }
 
 // Sample team member data
-const memberData = [
+const memberData: TeamMember[] = [
   {
     id: 1,
     name: "John Doe",
@@ -220,7 +220,7 @@ export default function MemberProfilePage() {
     const fetchMember = () => {
       setTimeout(() => {
         const foundMember = memberData.find(m => m.id === memberId)
-        setMember(foundMember || null)
+        setMember(foundMember as TeamMember | null)
         setLoading(false)
       }, 500)
     }
