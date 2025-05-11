@@ -50,7 +50,7 @@ export default function SettingsPage() {
     defaultValues,
   })
 
-  function onSubmit(_data: ProfileFormValues) {
+  function onSubmit() {
     setIsLoading(true)
     
     // Simulate API call

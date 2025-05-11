@@ -247,7 +247,7 @@ export default function EditMemberPage() {
           <SiteHeader title="Edit Team Member" />
           <div className="flex flex-col items-center justify-center h-[calc(100vh-3.5rem)] gap-4">
             <h1 className="text-2xl font-bold">Member Not Found</h1>
-            <p className="text-muted-foreground">The team member you're trying to edit doesn't exist.</p>
+            <p className="text-muted-foreground">The team member you&apos;re trying to edit doesn&apos;t exist.</p>
             <Button asChild>
               <Link href="/team">
                 <ChevronLeft className="mr-2 h-4 w-4" />

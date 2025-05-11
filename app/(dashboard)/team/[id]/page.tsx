@@ -29,7 +29,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardFooter,
   CardTitle,
 } from "@/components/ui/card"
 import {
@@ -46,6 +45,40 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+
+// Define proper types for the data
+type RecentActivity = {
+  id: number;
+  type: "bug" | "project" | "document" | "meeting" | "design" | "code" | "test";
+  action: string;
+  target: string;
+  date: string;
+}
+
+type Project = {
+  id: number;
+  name: string;
+  role: string;
+  bugs: number;
+}
+
+type TeamMember = {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+  initials: string;
+  role: string;
+  position: string;
+  phone: string;
+  location: string;
+  joinedDate: string;
+  status: string;
+  lastActive: string;
+  bio: string;
+  assignedProjects: Project[];
+  recentActivities: RecentActivity[];
+}
 
 // Sample team member data
 const memberData = [
@@ -179,7 +212,7 @@ const memberData = [
 export default function MemberProfilePage() {
   const params = useParams()
   const memberId = Number(params.id)
-  const [member, setMember] = useState<any>(null)
+  const [member, setMember] = useState<TeamMember | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -233,7 +266,7 @@ export default function MemberProfilePage() {
           <SiteHeader title="Team Member" />
           <div className="flex flex-col items-center justify-center h-[calc(100vh-3.5rem)] gap-4">
             <h1 className="text-2xl font-bold">Member Not Found</h1>
-            <p className="text-muted-foreground">The team member you're looking for doesn't exist.</p>
+            <p className="text-muted-foreground">The team member you&apos;re looking for doesn&apos;t exist.</p>
             <Button asChild>
               <Link href="/team">
                 <ChevronLeft className="mr-2 h-4 w-4" />
@@ -381,12 +414,12 @@ export default function MemberProfilePage() {
                           <CardHeader>
                             <CardTitle>Recent Activity</CardTitle>
                             <CardDescription>
-                              Track {member.name}'s recent actions and contributions
+                              Track {member.name}&apos;s recent actions and contributions
                             </CardDescription>
                           </CardHeader>
                           <CardContent>
                             <div className="relative space-y-4">
-                              {member.recentActivities.map((activity: any, index: number) => (
+                              {member.recentActivities.map((activity: RecentActivity, index: number) => (
                                 <div key={activity.id} className="flex">
                                   <div className="mr-4 flex flex-col items-center">
                                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -443,7 +476,7 @@ export default function MemberProfilePage() {
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                  {member.assignedProjects.map((project: any) => (
+                                  {member.assignedProjects.map((project: Project) => (
                                     <TableRow key={project.id}>
                                       <TableCell className="font-medium">
                                         <Link href={`/projects/${project.id}`} className="hover:underline text-primary">
@@ -485,14 +518,14 @@ export default function MemberProfilePage() {
                             </CardDescription>
                           </CardHeader>
                           <CardContent>
-                            {member.assignedProjects.some((p: any) => p.bugs > 0) ? (
+                            {member.assignedProjects.some((p: Project) => p.bugs > 0) ? (
                               <div className="space-y-6">
                                 <div>
                                   <h3 className="text-sm font-medium mb-3">Assigned Bugs by Project</h3>
                                   <div className="space-y-3">
                                     {member.assignedProjects
-                                      .filter((p: any) => p.bugs > 0)
-                                      .map((project: any) => (
+                                      .filter((p: Project) => p.bugs > 0)
+                                      .map((project: Project) => (
                                         <div key={project.id} className="flex items-center justify-between">
                                           <div className="flex items-center">
                                             <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
@@ -508,8 +541,8 @@ export default function MemberProfilePage() {
                                   <h3 className="text-sm font-medium mb-3">Recent Bug Activity</h3>
                                   <div className="space-y-3">
                                     {member.recentActivities
-                                      .filter((a: any) => a.type === "bug")
-                                      .map((activity: any) => (
+                                      .filter((a: RecentActivity) => a.type === "bug")
+                                      .map((activity: RecentActivity) => (
                                         <div key={activity.id} className="rounded-lg border p-3">
                                           <div className="flex justify-between items-start">
                                             <div>

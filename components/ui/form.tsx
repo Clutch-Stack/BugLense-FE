@@ -57,6 +57,13 @@ const useFormField = () => {
 
   const { id } = itemContext
 
+  // Always call hooks unconditionally at the top level
+  const fieldState = useHookFormState({
+    // Use optional chaining to safely access control
+    control: formContext?.control,
+    name: fieldContext.name,
+  })
+
   // Set up default values
   const defaultValues = {
     id,
@@ -64,18 +71,14 @@ const useFormField = () => {
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
-    error: undefined
   }
-
-  // Always use the hook - never conditionally call hooks
-  const fieldState = formContext ? useHookFormState({
-    control: formContext.control,
-    name: fieldContext.name,
-  }) : { error: undefined };
 
   // Return early if no form context
   if (!formContext) {
-    return defaultValues
+    return {
+      ...defaultValues,
+      error: undefined
+    }
   }
 
   // Extract error from fieldState
