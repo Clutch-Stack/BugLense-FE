@@ -57,16 +57,19 @@ const useFormField = () => {
 
   const { id } = itemContext
 
-  // Return basic info if form context is not available
+  // Default values if no form context
+  const defaultValues = {
+    id,
+    name: fieldContext.name,
+    formItemId: `${id}-form-item`,
+    formDescriptionId: `${id}-form-item-description`,
+    formMessageId: `${id}-form-item-message`,
+    error: undefined
+  }
+
+  // Return early if no form context
   if (!formContext) {
-    return {
-      id,
-      name: fieldContext.name,
-      formItemId: `${id}-form-item`,
-      formDescriptionId: `${id}-form-item-description`,
-      formMessageId: `${id}-form-item-message`,
-      error: undefined
-    }
+    return defaultValues
   }
 
   // Extract control if form context is available
@@ -80,11 +83,7 @@ const useFormField = () => {
   const { error } = fieldState
 
   return {
-    id,
-    name: fieldContext.name,
-    formItemId: `${id}-form-item`,
-    formDescriptionId: `${id}-form-item-description`,
-    formMessageId: `${id}-form-item-message`,
+    ...defaultValues,
     error,
   }
 }
