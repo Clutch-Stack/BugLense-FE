@@ -198,7 +198,15 @@ export default function WebhooksPage() {
         setIsEditing(null)
       } else {
         // Add new webhook
-        const newWebhook = {
+        const newWebhook: {
+          id: string;
+          name: string;
+          url: string;
+          events: string[];
+          active: boolean;
+          created: string;
+          lastTriggered: null;
+        } = {
           id: `wh_${Date.now()}`,
           name: data.name,
           url: data.url,
@@ -206,9 +214,10 @@ export default function WebhooksPage() {
           active: data.active,
           created: new Date().toISOString(),
           lastTriggered: null
-        };
+        }
         
-        setWebhooks(prev => [...prev, newWebhook]);
+        // Type assertion to ensure compatibility with existing webhooks
+        setWebhooks(prev => [...prev, newWebhook as any])
         
         toast({
           title: "Webhook created",
