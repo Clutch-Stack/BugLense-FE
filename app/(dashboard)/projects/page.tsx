@@ -96,10 +96,6 @@ export default function ProjectsPage() {
     },
   ]
 
-  // Filter states
-  const filterOptions = ["All Projects", "Active", "In Progress", "Planning", "Completed"]
-  const sortOptions = ["Recently Updated", "Name (A-Z)", "Due Date", "Progress"]
-
   return (
     <SidebarProvider
       style={

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Code, Book, Package, Globe, CopyIcon, CheckIcon, MessageSquareShare, LayoutDashboard, Home, FileCode, BookMarked, HelpCircle } from "lucide-react"
+import { Code, Book, Package, Globe, CopyIcon, CheckIcon, MessageSquareShare, Home, BookMarked, HelpCircle } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -376,7 +376,9 @@ fetch('https://api.buglense.com/v1/bugs', {
                     </p>
                     <div className="bg-muted p-2 rounded-md mb-4">
                       <pre className="text-xs overflow-auto">
-                        <code>// See documentation for installation</code>
+                        <code>
+                          {/* See documentation for installation */}
+                        </code>
                       </pre>
                     </div>
                     <Button variant="outline" size="sm">View Documentation</Button>

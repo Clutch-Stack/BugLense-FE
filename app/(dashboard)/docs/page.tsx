@@ -259,7 +259,7 @@ export default function DocumentationPage() {
             </Card>
             
             <div className="text-center p-6 border rounded-lg bg-muted/20">
-              <h3 className="text-lg font-medium mb-2">Can't find what you're looking for?</h3>
+              <h3 className="text-lg font-medium mb-2">Can&apos;t find what you&apos;re looking for?</h3>
               <p className="text-muted-foreground mb-4">
                 Check our help center or contact our support team for assistance.
               </p>
