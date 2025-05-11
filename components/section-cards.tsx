@@ -1,18 +1,12 @@
-import { ArrowUpIcon, ArrowDownIcon } from "lucide-react"
 import {
   Bug,
   BarChart3,
   CheckCircle2,
   Clock,
-  Users,
 } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import {
   Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
   CardContent,
