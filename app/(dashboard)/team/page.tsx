@@ -14,19 +14,14 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardFooter,
   CardTitle,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { 
-  Plus, 
   Search, 
-  Filter, 
-  ChevronDown,
   MoreHorizontal,
   Mail,
-  Calendar,
   Clock,
   ShieldCheck,
   ShieldAlert,
@@ -141,7 +136,9 @@ const initialMembers = [
 ]
 
 // Role permissions structure
-const rolePermissions = {
+type RolePermission = 'Owner' | 'Admin' | 'Member';
+
+const rolePermissions: Record<RolePermission, string[]> = {
   Owner: [
     "Manage members and roles",
     "Access all projects and bugs",

@@ -57,7 +57,7 @@ const useFormField = () => {
 
   const { id } = itemContext
 
-  // Default values if no form context
+  // Set up default values
   const defaultValues = {
     id,
     name: fieldContext.name,
@@ -67,19 +67,18 @@ const useFormField = () => {
     error: undefined
   }
 
+  // Always use the hook - never conditionally call hooks
+  const fieldState = formContext ? useHookFormState({
+    control: formContext.control,
+    name: fieldContext.name,
+  }) : { error: undefined };
+
   // Return early if no form context
   if (!formContext) {
     return defaultValues
   }
 
-  // Extract control if form context is available
-  const { control } = formContext
-  
-  const fieldState = useHookFormState({
-    control,
-    name: fieldContext.name,
-  })
-
+  // Extract error from fieldState
   const { error } = fieldState
 
   return {
