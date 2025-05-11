@@ -31,7 +31,15 @@ import {
 
 // Create wrapper components for Lucide icons to match Tabler icon type
 const createIconWrapper = (LucideIcon: React.ElementType): Icon => {
-  return (props) => <LucideIcon {...props} />;
+  // Use React.ComponentPropsWithRef to get the correct props type
+  const IconWrapper = (props: React.ComponentPropsWithoutRef<React.ElementType>) => <LucideIcon {...props} />;
+  const iconName = typeof LucideIcon === 'function' && 'displayName' in LucideIcon 
+    ? LucideIcon.displayName 
+    : typeof LucideIcon === 'function' && 'name' in LucideIcon 
+      ? LucideIcon.name 
+      : 'Unknown';
+  IconWrapper.displayName = `TablerIcon(${iconName})`;
+  return IconWrapper;
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
