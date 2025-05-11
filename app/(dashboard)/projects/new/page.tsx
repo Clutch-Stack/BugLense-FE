@@ -32,7 +32,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Switch } from "@/components/ui/switch"
 import { z } from "zod"
@@ -99,8 +98,29 @@ export default function NewProjectPage() {
   const [newMember, setNewMember] = useState("")
   
   const form = useForm<ProjectFormValues>({
-    resolver: zodResolver(projectFormSchema),
     defaultValues,
+    resolver: async (values) => {
+      const result = projectFormSchema.safeParse(values);
+      if (result.success) {
+        return {
+          values: result.data,
+          errors: {},
+        };
+      } else {
+        const errors = {};
+        result.error.errors.forEach((error) => {
+          const path = error.path.join(".");
+          errors[path] = {
+            type: "validation",
+            message: error.message,
+          };
+        });
+        return {
+          values: {},
+          errors,
+        };
+      }
+    },
   })
 
   // Generate a project ID based on the project name
@@ -138,10 +158,23 @@ export default function NewProjectPage() {
     setMembers(members.filter(member => member !== memberToRemove));
   };
 
-  async function onSubmit(data: ProjectFormValues) {
+  async function onSubmit(values: ProjectFormValues) {
     setIsLoading(true)
     
     try {
+      // Validate the data with Zod
+      const result = projectFormSchema.safeParse(values);
+      
+      if (!result.success) {
+        const errors = result.error.flatten();
+        console.error("Validation errors:", errors);
+        toast.error("Please fix the form errors before submitting");
+        setIsLoading(false);
+        return;
+      }
+      
+      const data = result.data;
+      
       // Here you would normally send the data to your API
       const projectData = {
         ...data,
