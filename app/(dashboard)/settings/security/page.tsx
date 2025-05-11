@@ -83,7 +83,7 @@ export default function SecurityPage() {
     defaultValues,
   })
 
-  function onPasswordSubmit(_data: PasswordFormValues) {
+  function onPasswordSubmit() {
     setIsLoading(true)
     
     // Simulate API call

@@ -14,7 +14,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardFooter,
   CardTitle,
 } from "@/components/ui/card"
 import {
@@ -135,11 +134,19 @@ const memberFormSchema = z.object({
 
 type MemberFormValues = z.infer<typeof memberFormSchema>
 
+// Define a proper type for member instead of using any
+type TeamMember = z.infer<typeof memberFormSchema> & {
+  id: number;
+  avatar: string;
+  initials: string;
+  joinedDate: string;
+}
+
 export default function EditMemberPage() {
   const params = useParams()
   const router = useRouter()
   const memberId = Number(params.id)
-  const [member, setMember] = useState<any>(null)
+  const [member, setMember] = useState<TeamMember | null>(null)
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -287,7 +294,7 @@ export default function EditMemberPage() {
                   <CardHeader>
                     <CardTitle>Member Information</CardTitle>
                     <CardDescription>
-                      Update {member.name}'s profile information
+                      Update {member.name}&apos;s profile information
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -433,7 +440,7 @@ export default function EditMemberPage() {
                                 />
                               </FormControl>
                               <FormDescription>
-                                Add some details about the team member's experience, skills, and background.
+                                Add some details about the team member&apos;s experience, skills, and background.
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
