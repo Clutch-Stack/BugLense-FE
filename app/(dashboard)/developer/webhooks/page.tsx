@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { MessageSquareShare, Plus, Trash2, Globe, Check, X, Pencil, Loader2, LayoutDashboard, Home, FileCode, BookMarked, HelpCircle } from "lucide-react"
@@ -47,7 +46,14 @@ const webhookFormSchema = z.object({
   active: z.boolean().default(true),
 })
 
-type WebhookFormValues = z.infer<typeof webhookFormSchema>
+// Custom type for form inputs to ensure type safety
+type FormInputs = {
+  name: string;
+  url: string;
+  secret: string;
+  events: string[];
+  active: boolean;
+};
 
 // Sample webhook events
 const webhookEvents = [
@@ -111,8 +117,8 @@ export default function WebhooksPage() {
   const [webhookToDelete, setWebhookToDelete] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   
-  const form = useForm<WebhookFormValues>({
-    resolver: zodResolver(webhookFormSchema),
+  // Use the form without the zodResolver since it's causing type issues
+  const form = useForm<FormInputs>({
     defaultValues: {
       name: "",
       url: "",
@@ -122,7 +128,37 @@ export default function WebhooksPage() {
     },
   })
 
-  function onSubmit(data: WebhookFormValues) {
+  // Validate the form data against the schema
+  const validateForm = (data: FormInputs): boolean => {
+    try {
+      const result = webhookFormSchema.safeParse(data);
+      
+      if (!result.success) {
+        console.error("Form validation failed:", result.error);
+        toast({
+          title: "Validation Error",
+          description: "Please check your inputs and try again."
+        });
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Form validation error:", error);
+      toast({
+        title: "Validation Error",
+        description: "An unexpected error occurred during validation."
+      });
+      return false;
+    }
+  };
+
+  function onSubmit(data: FormInputs) {
+    // Validate form data first
+    if (!validateForm(data)) {
+      return;
+    }
+    
     setIsLoading(true)
     
     // Simulate API call
@@ -180,13 +216,14 @@ export default function WebhooksPage() {
     const webhook = webhooks.find(wh => wh.id === webhookId)
     
     if (webhook) {
+      // Reset the form with values from the selected webhook
       form.reset({
         name: webhook.name,
         url: webhook.url,
         secret: "********", // Placeholder for security
         events: webhook.events,
         active: webhook.active,
-      })
+      });
       
       setIsEditing(webhookId)
       setIsAdding(true)
