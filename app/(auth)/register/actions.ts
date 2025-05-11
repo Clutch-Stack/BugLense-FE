@@ -2,18 +2,33 @@
 
 import { redirect } from "next/navigation";
 
-// This is a dummy registration action for demonstration purposes only
-export async function register(formData: FormData): Promise<void> {
-  // In a real app, this would validate and store the new user
-  const name = formData.get('name') as string;
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+/**
+ * Server action for handling user registration
+ */
+export async function register(formData: FormData) {
+  // Get registration data from form
+  const name = formData.get('name');
+  const email = formData.get('email');
+  const password = formData.get('password');
   
-  // Simulate a small delay
+  if (!name || typeof name !== 'string') {
+    throw new Error('Name is required');
+  }
+  
+  if (!email || typeof email !== 'string') {
+    throw new Error('Email is required');
+  }
+  
+  if (!password || typeof password !== 'string') {
+    throw new Error('Password is required');
+  }
+  
+  // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1000));
   
+  // Log for demo purposes
   console.log(`Registration for: ${name} (${email})`);
   
-  // Redirect to dashboard for demo
+  // Redirect to dashboard
   redirect("/dashboard");
 } 

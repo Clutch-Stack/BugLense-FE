@@ -2,17 +2,28 @@
 
 import { redirect } from "next/navigation";
 
-// This is a dummy login action for demonstration purposes only
-export async function login(formData: FormData): Promise<void> {
-  // In a real app, this would validate credentials and authenticate the user
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+/**
+ * Server action for handling user login
+ */
+export async function login(formData: FormData) {
+  // Get credentials from form data
+  const email = formData.get('email');
+  const password = formData.get('password');
   
-  // Simulate a small delay
+  if (!email || typeof email !== 'string') {
+    throw new Error('Email is required');
+  }
+  
+  if (!password || typeof password !== 'string') {
+    throw new Error('Password is required');
+  }
+  
+  // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1000));
   
+  // Log for demo purposes
   console.log(`Login attempt for: ${email}`);
   
-  // Always redirect to dashboard for demo
+  // Redirect to dashboard
   redirect("/dashboard");
 } 

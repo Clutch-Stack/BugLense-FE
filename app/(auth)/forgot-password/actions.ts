@@ -1,14 +1,22 @@
 "use server"
 
-// This is a dummy action for demonstration purposes only
-export async function forgotPassword(formData: FormData): Promise<void> {
-  // In a real app, this would validate the email and send a reset link
-  const email = formData.get('email') as string;
+/**
+ * Server action for handling password reset requests
+ */
+export async function forgotPassword(formData: FormData) {
+  // Get email from the form data
+  const email = formData.get('email');
   
-  // Simulate a small delay
+  if (!email || typeof email !== 'string') {
+    throw new Error('Email is required');
+  }
+  
+  // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1000));
   
-  // We don't return anything because server actions used with form should return void
-  // The redirect or handling would happen inside the function
+  // Log for demo purposes
   console.log(`Password reset link would be sent to: ${email}`);
+  
+  // In a real app, we would return success/error status
+  // or redirect the user to a confirmation page
 } 
