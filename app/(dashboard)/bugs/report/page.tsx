@@ -20,7 +20,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -38,7 +37,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { toast } from "sonner"
-import { Globe, Laptop, Monitor, Upload } from "lucide-react"
+import { Globe, Laptop, Upload } from "lucide-react"
 
 const bugFormSchema = z.object({
   title: z.string().min(5, {
@@ -729,7 +728,7 @@ export default function ReportBugPage() {
                                         Notify me when changes are made to this bug
                                       </FormLabel>
                                       <FormDescription>
-                                        You'll receive email notifications when updates are made.
+                                        You&apos;ll receive email notifications when updates are made.
                                       </FormDescription>
                                     </div>
                                   </FormItem>
