@@ -9,12 +9,6 @@ import {
   Settings,
   Users,
   HelpCircle,
-  Clock,
-  Star,
-  Database,
-  FileText,
-  AlertCircle,
-  Layers,
   Book,
   Code
 } from "lucide-react"
@@ -104,10 +98,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="/">
+              <Link href="/">
                 <Bug className="!size-5 text-primary" />
                 <span className="text-base font-semibold">BugLense</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
