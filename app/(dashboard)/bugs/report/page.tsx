@@ -56,7 +56,7 @@ const bugFormSchema = z.object({
   priority: z.enum(["Low", "Medium", "High", "Critical"]),
   severity: z.enum(["Minor", "Major", "Critical", "Blocker"]),
   status: z.enum(["Open", "In Progress", "Resolved", "Closed"]).default("Open"),
-  project: z.string(),
+  project: z.string().min(1, { message: "Project is required" }),
   assignee: z.string().optional(),
   browser: z.string().optional(),
   operatingSystem: z.string().optional(),
@@ -149,7 +149,7 @@ const defaultValues: Partial<BugFormValues> = {
   priority: "Medium",
   severity: "Major",
   status: "Open",
-  project: "",
+  project: "User Portal",
   assignee: "",
   browser: "",
   operatingSystem: "",
@@ -466,13 +466,43 @@ export default function ReportBugPage() {
                                       </SelectContent>
                                     </Select>
                                     <FormDescription>
-                                      How severe is the impact of this bug
+                                      The impact of the bug on users/functionality
                                     </FormDescription>
                                     <FormMessage />
                                   </FormItem>
                                 )}
                               />
                             </div>
+
+                            <FormField
+                              control={form.control}
+                              name="status"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Status</FormLabel>
+                                  <Select 
+                                    onValueChange={field.onChange} 
+                                    defaultValue={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select status" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="Open">Open</SelectItem>
+                                      <SelectItem value="In Progress">In Progress</SelectItem>
+                                      <SelectItem value="Resolved">Resolved</SelectItem>
+                                      <SelectItem value="Closed">Closed</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormDescription>
+                                    Current status of the bug
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                             
                             <div className="text-right">
                               <Button 
