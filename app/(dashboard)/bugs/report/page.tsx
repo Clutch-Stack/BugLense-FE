@@ -58,7 +58,25 @@ const bugFormSchema = z.object({
   notifyOnChange: z.boolean().default(false),
 });
 
-type BugFormValues = z.infer<typeof bugFormSchema>;
+// Define form input and output types
+type FormInputs = {
+  title: string;
+  description: string;
+  stepsToReproduce: string;
+  expectedBehavior?: string;
+  actualBehavior?: string;
+  priority: string;
+  severity: string;
+  status: string;
+  project: string;
+  assignee?: string;
+  browser?: string;
+  operatingSystem?: string;
+  device?: string;
+  screenSize?: string;
+  tags: string[];
+  notifyOnChange: boolean;
+};
 
 const defaultValues = {
   title: "",
@@ -157,12 +175,12 @@ export default function ReportBugPage() {
   const [activeTab, setActiveTab] = useState("details")
   
   // Use the form without the zodResolver since it's causing type issues
-  const form = useForm({
+  const form = useForm<FormInputs>({
     defaultValues
   });
 
   // Perform manual validation before submission
-  const validateForm = (data: any) => {
+  const validateForm = (data: FormInputs): boolean => {
     try {
       // Parse the data with zod schema
       const result = bugFormSchema.safeParse(data);
@@ -187,7 +205,7 @@ export default function ReportBugPage() {
     setSelectedFile(file)
   }
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: FormInputs) {
     // Manually validate the data
     if (!validateForm(data)) {
       return;
