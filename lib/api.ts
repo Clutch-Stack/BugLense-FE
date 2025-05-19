@@ -66,11 +66,14 @@ export class ApiClient {
   /**
    * Create headers for API requests
    */
-  private createHeaders(): HeadersInit {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
+  private createHeaders(isFormData: boolean = false): HeadersInit {
+    const headers: HeadersInit = {};
+    
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json';
+    }
+    
+    headers['Accept'] = 'application/json';
 
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
@@ -121,7 +124,7 @@ export class ApiClient {
     try {
       const response = await fetch(url.toString(), {
         method: 'GET',
-        headers: this.createHeaders(),
+        headers: this.createHeaders(false),
       });
 
       return this.handleResponse<T>(response);
@@ -141,7 +144,7 @@ export class ApiClient {
     try {
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
-        headers: this.createHeaders(),
+        headers: this.createHeaders(false),
         body: data ? JSON.stringify(data) : undefined,
       });
 
@@ -161,7 +164,7 @@ export class ApiClient {
     try {
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'PUT',
-        headers: this.createHeaders(),
+        headers: this.createHeaders(false),
         body: data ? JSON.stringify(data) : undefined,
       });
 
@@ -181,7 +184,7 @@ export class ApiClient {
     try {
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'PATCH',
-        headers: this.createHeaders(),
+        headers: this.createHeaders(false),
         body: data ? JSON.stringify(data) : undefined,
       });
 
@@ -201,7 +204,27 @@ export class ApiClient {
     try {
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'DELETE',
-        headers: this.createHeaders(),
+        headers: this.createHeaders(false),
+      });
+
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        handleGlobalError(error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Make a POST request with FormData (for file uploads)
+   */
+  async postFormData<T>(endpoint: string, formData: FormData): Promise<T> {
+    try {
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        method: 'POST',
+        headers: this.createHeaders(true),
+        body: formData,
       });
 
       return this.handleResponse<T>(response);

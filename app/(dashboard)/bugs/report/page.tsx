@@ -37,6 +37,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { toast } from "sonner"
 import { Globe, Laptop, Upload } from "lucide-react"
+import { useBugStore, useProjectStore } from "@/lib/stores"
+import { apiClient } from "@/lib/api"
 
 // Define a simpler schema
 const bugFormSchema = z.object({
@@ -214,37 +216,61 @@ export default function ReportBugPage() {
     setIsLoading(true)
     
     try {
-      // Create a FormData object to handle file uploads
+      // Get the bug store for creating bugs
+      const { createBug } = useBugStore.getState()
+      
+      // Create a FormData object for file uploads
       const formData = new FormData()
       
-      // Append all form data
-      Object.entries(data).forEach(([key, value]) => {
-        if (key !== 'attachments' && value !== undefined) {
-          if (typeof value === 'object' && !Array.isArray(value)) {
-            formData.append(key, JSON.stringify(value))
-          } else {
-            formData.append(key, String(value))
-          }
-        }
-      })
-      
-      // Append the file if it exists
-      if (selectedFile) {
-        formData.append('attachments', selectedFile)
+      // Prepare bug data
+      const bugData: Partial<Bug> = {
+        title: data.title,
+        description: data.description,
+        stepsToReproduce: data.stepsToReproduce,
+        expectedBehavior: data.expectedBehavior,
+        actualBehavior: data.actualBehavior,
+        priority: data.priority,
+        severity: data.severity,
+        status: data.status,
+        project_id: data.project,
+        assignee: data.assignee,
+        browser: data.browser,
+        operatingSystem: data.operatingSystem,
+        device: data.device,
+        screenSize: data.screenSize,
+        tags: data.tags,
+        notifyOnChange: data.notifyOnChange
       }
       
-      // Here you would normally send the formData to your API
-      console.log("Bug data:", data)
-      console.log("File:", selectedFile)
+      // Append file if selected
+      if (selectedFile) {
+        formData.append('attachments', selectedFile)
+        
+        // Append all other data as well
+        Object.entries(bugData).forEach(([key, value]) => {
+          if (value !== undefined) {
+            if (typeof value === 'object') {
+              formData.append(key, JSON.stringify(value))
+            } else {
+              formData.append(key, String(value))
+            }
+          }
+        })
+        
+        // Use the API client directly for form data
+        await apiClient.postFormData('/bugs', formData)
+        
+        toast.success("Bug reported successfully with attachment")
+      } else {
+        // No file, use the regular createBug function
+        await createBug(bugData)
+        toast.success("Bug reported successfully")
+      }
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      toast.success("Bug reported successfully")
       router.push("/bugs")
     } catch (error) {
-      toast.error("Failed to report bug")
-      console.error(error)
+      console.error("Error submitting bug:", error)
+      toast.error(error instanceof Error ? error.message : "Failed to report bug")
     } finally {
       setIsLoading(false)
     }
