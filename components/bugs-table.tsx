@@ -1,17 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+import { useEffect } from "react"
+import Link from "next/link"
+import { useBugStore } from "@/lib/stores"
+import { Bug, BugPriority, BugStatus } from "@/lib/types"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -20,215 +15,270 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { 
-  Search, 
-  MoreHorizontal, 
-  ChevronDown,
-  Filter
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { 
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Search,
+  Filter,
+  ChevronDown,
+  MoreHorizontal,
+  Copy,
+  Pencil,
+  Trash2,
+  AlertCircle,
+} from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Loading } from "@/components/ui/loading"
 
-interface Bug {
-  id: string
-  title: string
-  status: string
-  priority: string
-  assignee: string
-  project: string
-  updatedAt: string
-}
+export function BugsTable({ projectId }: { projectId?: string }) {
+  const {
+    bugs,
+    filteredBugs,
+    isLoading,
+    error,
+    fetchBugs,
+    fetchBugsByProject,
+    setSearchTerm,
+    setFilter,
+    resetFilters
+  } = useBugStore()
 
-export function BugsTable({ data }: { data: Bug[] }) {
-  const [searchTerm, setSearchTerm] = React.useState("")
-  const [selectedPriority, setSelectedPriority] = React.useState<string | null>(null)
-  const [selectedStatus, setSelectedStatus] = React.useState<string | null>(null)
   const [selectedRows, setSelectedRows] = React.useState<string[]>([])
 
-  // Filter data based on search term and filters
-  const filteredData = data.filter((bug) => {
-    const matchesSearch = searchTerm === "" || 
-      bug.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bug.id.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesPriority = selectedPriority === null || bug.priority === selectedPriority
-    const matchesStatus = selectedStatus === null || bug.status === selectedStatus
-    
-    return matchesSearch && matchesPriority && matchesStatus
-  })
+  // Fetch bugs when component mounts
+  useEffect(() => {
+    if (projectId) {
+      fetchBugsByProject(projectId)
+    } else {
+      fetchBugs()
+    }
+  }, [projectId, fetchBugs, fetchBugsByProject])
 
-  const toggleSelectAll = () => {
-    if (selectedRows.length === filteredData.length) {
+  // Handle search input
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value)
+  }
+
+  // Handle status filter change
+  const handleStatusChange = (value: string) => {
+    setFilter('status', value === 'all' ? null : value)
+  }
+
+  // Handle priority filter change
+  const handlePriorityChange = (value: string) => {
+    setFilter('priority', value === 'all' ? null : value)
+  }
+
+  // Handle row selection
+  const handleRowSelect = (id: string) => {
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    )
+  }
+
+  // Handle "select all" checkbox
+  const handleSelectAll = () => {
+    if (selectedRows.length === filteredBugs.length) {
       setSelectedRows([])
     } else {
-      setSelectedRows(filteredData.map(bug => bug.id))
+      setSelectedRows(filteredBugs.map((bug) => bug.id))
     }
   }
 
-  const toggleSelectRow = (id: string) => {
-    if (selectedRows.includes(id)) {
-      setSelectedRows(selectedRows.filter(rowId => rowId !== id))
-    } else {
-      setSelectedRows([...selectedRows, id])
-    }
+  if (isLoading) {
+    return <Loading skeleton text="Loading bugs..." />
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive" className="mb-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription className="flex justify-between items-center">
+          <span>Failed to load bugs: {error}</span>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => projectId ? fetchBugsByProject(projectId) : fetchBugs()}
+          >
+            Retry
+          </Button>
+        </AlertDescription>
+      </Alert>
+    )
   }
 
   return (
-    <div className="w-full px-4 lg:px-6">
-      <div className="flex flex-col space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-semibold tracking-tight">Recent Bugs</h2>
-            <p className="text-sm text-muted-foreground">
-              View and manage your most recent bugs across all projects
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 gap-1">
-              <Filter className="h-3.5 w-3.5" />
-              <span>Filter</span>
-              <ChevronDown className="h-3.5 w-3.5" />
-            </Button>
-            <Button size="sm" className="h-8">Create Bug</Button>
-          </div>
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search bugs..."
+            className="pl-8 h-9"
+            onChange={handleSearch}
+          />
         </div>
-        
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search bugs..."
-                className="pl-8 h-9"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Select 
-              onValueChange={(value) => setSelectedPriority(value === "all" ? null : value)}
-            >
-              <SelectTrigger className="w-[140px] h-9">
-                <SelectValue placeholder="Priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Priorities</SelectItem>
-                <SelectItem value="High">High</SelectItem>
-                <SelectItem value="Medium">Medium</SelectItem>
-                <SelectItem value="Low">Low</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select 
-              onValueChange={(value) => setSelectedStatus(value === "all" ? null : value)}
-            >
-              <SelectTrigger className="w-[140px] h-9">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Open">Open</SelectItem>
-                <SelectItem value="In Progress">In Progress</SelectItem>
-                <SelectItem value="Resolved">Resolved</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex items-center gap-2">
+          <Select onValueChange={handleStatusChange}>
+            <SelectTrigger className="w-[140px] h-9">
+              <SelectValue placeholder="All Statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value={BugStatus.OPEN}>Open</SelectItem>
+              <SelectItem value={BugStatus.IN_PROGRESS}>In Progress</SelectItem>
+              <SelectItem value={BugStatus.RESOLVED}>Resolved</SelectItem>
+              <SelectItem value={BugStatus.CLOSED}>Closed</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select onValueChange={handlePriorityChange}>
+            <SelectTrigger className="w-[140px] h-9">
+              <SelectValue placeholder="All Priorities" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Priorities</SelectItem>
+              <SelectItem value={BugPriority.HIGH}>High</SelectItem>
+              <SelectItem value={BugPriority.MEDIUM}>Medium</SelectItem>
+              <SelectItem value={BugPriority.LOW}>Low</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-9 gap-1.5 hidden md:flex"
+            onClick={() => resetFilters()}
+          >
+            <Filter className="h-3.5 w-3.5" />
+            Reset Filters
+          </Button>
         </div>
+      </div>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[40px]">
+                <Checkbox
+                  checked={
+                    filteredBugs.length > 0 &&
+                    selectedRows.length === filteredBugs.length
+                  }
+                  onCheckedChange={handleSelectAll}
+                  aria-label="Select all"
+                />
+              </TableHead>
+              <TableHead className="w-[100px]">ID</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead className="w-[120px]">Status</TableHead>
+              <TableHead className="w-[120px]">Priority</TableHead>
+              <TableHead className="w-[150px]">Assignee</TableHead>
+              <TableHead className="w-[150px]">Project</TableHead>
+              <TableHead className="w-[150px]">Updated</TableHead>
+              <TableHead className="w-[40px]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredBugs.length === 0 ? (
               <TableRow>
-                <TableHead className="w-[40px] text-center">
-                  <Checkbox 
-                    checked={
-                      filteredData.length > 0 && 
-                      selectedRows.length === filteredData.length
-                    }
-                    onCheckedChange={toggleSelectAll}
-                    aria-label="Select all bugs"
-                  />
-                </TableHead>
-                <TableHead className="w-[100px]">ID</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead className="w-[120px]">Status</TableHead>
-                <TableHead className="w-[120px]">Priority</TableHead>
-                <TableHead className="w-[150px]">Assignee</TableHead>
-                <TableHead className="w-[150px]">Project</TableHead>
-                <TableHead className="w-[150px]">Updated</TableHead>
-                <TableHead className="w-[40px]"></TableHead>
+                <TableCell colSpan={9} className="text-center py-6">
+                  No bugs found. Try adjusting your filters.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="h-24 text-center">
-                    No bugs found.
+            ) : (
+              filteredBugs.map((bug) => (
+                <TableRow key={bug.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedRows.includes(bug.id)}
+                      onCheckedChange={() => handleRowSelect(bug.id)}
+                      aria-label={`Select bug ${bug.id}`}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">{bug.id}</TableCell>
+                  <TableCell>
+                    <Link href={`/bugs/${bug.id}`} className="hover:underline">
+                      {bug.title}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        bug.status === BugStatus.OPEN && "border-blue-500 text-blue-500",
+                        bug.status === BugStatus.IN_PROGRESS && "border-amber-500 text-amber-500",
+                        bug.status === BugStatus.RESOLVED && "border-green-500 text-green-500",
+                        bug.status === BugStatus.CLOSED && "border-slate-500 text-slate-500"
+                      )}
+                    >
+                      {bug.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        bug.priority === BugPriority.HIGH && "border-destructive text-destructive",
+                        bug.priority === BugPriority.MEDIUM && "border-amber-500 text-amber-500",
+                        bug.priority === BugPriority.LOW && "border-green-500 text-green-500"
+                      )}
+                    >
+                      {bug.priority}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{bug.assigneeId || "Unassigned"}</TableCell>
+                  <TableCell>{bug.projectId}</TableCell>
+                  <TableCell>{new Date(bug.updatedAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                          <Copy className="mr-2 h-4 w-4" />
+                          Copy ID
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredData.map((bug) => (
-                  <TableRow key={bug.id}>
-                    <TableCell className="text-center">
-                      <Checkbox 
-                        checked={selectedRows.includes(bug.id)}
-                        onCheckedChange={() => toggleSelectRow(bug.id)}
-                        aria-label={`Select bug ${bug.id}`}
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">{bug.id}</TableCell>
-                    <TableCell>{bug.title}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={
-                        bug.status === "Open" ? "border-blue-500 text-blue-500" :
-                        bug.status === "In Progress" ? "border-amber-500 text-amber-500" :
-                        "border-green-500 text-green-500"
-                      }>
-                        {bug.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={
-                        bug.priority === "High" ? "border-destructive text-destructive" :
-                        bug.priority === "Medium" ? "border-amber-500 text-amber-500" :
-                        "border-green-500 text-green-500"
-                      }>
-                        {bug.priority}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{bug.assignee}</TableCell>
-                    <TableCell>{bug.project}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{bug.updatedAt}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>View details</DropdownMenuItem>
-                          <DropdownMenuItem>Assign to me</DropdownMenuItem>
-                          <DropdownMenuItem>Change status</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>Edit bug</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )
