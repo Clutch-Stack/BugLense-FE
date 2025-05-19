@@ -65,7 +65,9 @@ const projectFormSchema = z.object({
   errorLoggingLevel: z.enum(["None", "Errors", "Warnings", "All"]).default("None"),
   performanceMonitoring: z.boolean().default(false),
   crashReporting: z.boolean().default(false),
-  teamId: z.string().optional(),
+  teamId: z.string({
+    required_error: "Please select a team."
+  }),
 })
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>
@@ -81,6 +83,7 @@ const defaultValues: Partial<ProjectFormValues> = {
   errorLoggingLevel: "None",
   performanceMonitoring: false,
   crashReporting: false,
+  teamId: "",
 }
 
 // Project categories
@@ -337,6 +340,35 @@ export default function NewProjectPage() {
 
                           <FormField
                             control={form.control}
+                            name="status"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Status</FormLabel>
+                                <Select 
+                                  onValueChange={field.onChange} 
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Planning">Planning</SelectItem>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="On Hold">On Hold</SelectItem>
+                                    <SelectItem value="Completed">Completed</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+                          <FormField
+                            control={form.control}
                             name="teamId"
                             render={({ field }) => (
                               <FormItem>
@@ -370,21 +402,21 @@ export default function NewProjectPage() {
                               </FormItem>
                             )}
                           />
-                        </div>
 
-                        <FormField
-                          control={form.control}
-                          name="dueDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Due Date</FormLabel>
-                              <FormControl>
-                                <Input type="date" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                          <FormField
+                            control={form.control}
+                            name="dueDate"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Due Date</FormLabel>
+                                <FormControl>
+                                  <Input type="date" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
 
                         {/* Team Members Section */}
                         <div>
