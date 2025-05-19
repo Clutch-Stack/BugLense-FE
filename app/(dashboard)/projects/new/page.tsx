@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
@@ -38,7 +38,7 @@ import { z } from "zod"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { X, Plus } from "lucide-react"
-import { useProjectStore } from "@/lib/stores"
+import { useProjectStore, useTeamStore } from "@/lib/stores"
 
 const projectFormSchema = z.object({
   name: z.string().min(2, {
@@ -65,6 +65,7 @@ const projectFormSchema = z.object({
   errorLoggingLevel: z.enum(["None", "Errors", "Warnings", "All"]).default("None"),
   performanceMonitoring: z.boolean().default(false),
   crashReporting: z.boolean().default(false),
+  teamId: z.string().optional(),
 })
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>
@@ -97,6 +98,14 @@ export default function NewProjectPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [members, setMembers] = useState<string[]>([])
   const [newMember, setNewMember] = useState("")
+  
+  // Get teams data from team store
+  const { teams, fetchTeams, isLoading: teamsLoading } = useTeamStore()
+  
+  // Fetch teams when component mounts
+  useEffect(() => {
+    fetchTeams()
+  }, [fetchTeams])
   
   const form = useForm<ProjectFormValues>({
     defaultValues,
@@ -177,21 +186,30 @@ export default function NewProjectPage() {
         return;
       }
       
+      // Get team ID from form or use first team as fallback
+      const teamId = values.teamId || (teams.length > 0 ? teams[0].id : null);
+      
+      if (!teamId) {
+        toast.error("No team selected. Please select a team or create one first.");
+        setIsLoading(false);
+        return;
+      }
+      
       // Prepare project data according to backend requirements
       const projectData = {
         name: values.name,
-        description: values.description,
+        description: values.description || "",
         key: values.projectId.toUpperCase(), // Project ID in backend is called 'key'
-        team_id: 1, // Temporary hardcoded team ID (should be replaced with real team selection)
+        team_id: teamId,
         status: values.status.toLowerCase(), // Convert to lowercase as required by backend
         visibility: "team", // Default visibility
-        configuration: {
+        configuration: JSON.stringify({
           enableAutomatedLogging: values.enableAutomatedLogging,
           errorLoggingLevel: values.errorLoggingLevel,
           performanceMonitoring: values.performanceMonitoring,
           crashReporting: values.crashReporting,
           members: members
-        }
+        })
       };
       
       // Call the createProject method from the store
@@ -319,26 +337,35 @@ export default function NewProjectPage() {
 
                           <FormField
                             control={form.control}
-                            name="status"
+                            name="teamId"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Status</FormLabel>
+                                <FormLabel>Team</FormLabel>
                                 <Select 
                                   onValueChange={field.onChange} 
                                   defaultValue={field.value}
                                 >
                                   <FormControl>
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Select status" />
+                                      <SelectValue placeholder={teamsLoading ? "Loading teams..." : "Select team"} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="Planning">Planning</SelectItem>
-                                    <SelectItem value="Active">Active</SelectItem>
-                                    <SelectItem value="On Hold">On Hold</SelectItem>
-                                    <SelectItem value="Completed">Completed</SelectItem>
+                                    {teams.map((team) => (
+                                      <SelectItem key={team.id} value={team.id}>
+                                        {team.name}
+                                      </SelectItem>
+                                    ))}
+                                    {teams.length === 0 && !teamsLoading && (
+                                      <SelectItem value="" disabled>
+                                        No teams available
+                                      </SelectItem>
+                                    )}
                                   </SelectContent>
                                 </Select>
+                                <FormDescription>
+                                  Select the team this project belongs to.
+                                </FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}
