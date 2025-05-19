@@ -38,6 +38,7 @@ import { z } from "zod"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { X, Plus } from "lucide-react"
+import { useProjectStore } from "@/lib/stores"
 
 const projectFormSchema = z.object({
   name: z.string().min(2, {
@@ -162,6 +163,9 @@ export default function NewProjectPage() {
     setIsLoading(true)
     
     try {
+      // Get project store from Zustand
+      const { createProject } = useProjectStore.getState()
+      
       // Validate the data with Zod
       const result = projectFormSchema.safeParse(values);
       
@@ -173,24 +177,31 @@ export default function NewProjectPage() {
         return;
       }
       
-      const data = result.data;
-      
-      // Here you would normally send the data to your API
+      // Prepare project data according to backend requirements
       const projectData = {
-        ...data,
-        members
+        name: values.name,
+        description: values.description,
+        key: values.projectId.toUpperCase(), // Project ID in backend is called 'key'
+        team_id: 1, // Temporary hardcoded team ID (should be replaced with real team selection)
+        status: values.status.toLowerCase(), // Convert to lowercase as required by backend
+        visibility: "team", // Default visibility
+        configuration: {
+          enableAutomatedLogging: values.enableAutomatedLogging,
+          errorLoggingLevel: values.errorLoggingLevel,
+          performanceMonitoring: values.performanceMonitoring,
+          crashReporting: values.crashReporting,
+          members: members
+        }
       };
       
-      console.log("Project data:", projectData)
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Call the createProject method from the store
+      await createProject(projectData);
       
       toast.success("Project created successfully")
       router.push("/projects")
-    } catch (error) {
-      toast.error("Failed to create project")
-      console.error(error)
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to create project")
+      console.error("Error creating project:", error)
     } finally {
       setIsLoading(false)
     }
